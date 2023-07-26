@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0">
+	<title>Hack Night JS</title>
+</head>
+
+<body>
+	<div id="container">Score: <span id="score-output"></span></div>
+	<label for="word-input">Enter a word</label>
+	<input type="text"
+		id="word-input" />
+	<button id="button">Click Me</button>
+
+	<script>
+		const container = document.getElementById('container')
+		const button = document.getElementById('button')
+		const scoreOutput = document.getElementById('score-output')
+		const wordInput = document.getElementById('word-input')
+
+		wordInput.addEventListener('change', (e) => calcScore(wordInput.value))
+		let score = 0;
+
+
+
+		button.onclick = () => {
+			calcScore(wordInput.value)
+		}
+
+		function calcScore(word) {
+			// multiply letters that are doubled or tripled
+			let rawLetters = word.toUpperCase('')
+			let scoreLetters = [];
+
+			for (let i = 0; i < rawLetters.length; i++) {
+				letter = rawLetters[i]
+				if (letter == ':') {
+					if (rawLetters[i + 1] == 'D') {
+
+						const doubledLetter = rawLetters[i - 1];
+						i += 7;
+						scoreLetters.push(doubledLetter)
+					} else if (rawLetters[i + 1] == 'T') {
+						//triple letter	
+						i += 7;
+						const tripledLetter = rawLetters[i - 1];
+						scoreLetters.push(tripledLetter);
+						scoreLetters.push(tripledLetter);
+					} else {
+						throw new Error('You messed up, invalid stuff in your words')
+					}
+				} else {
+					scoreLetters.push(letter);
+				}
+			}
+
+			// f:doubleood:triple
+			// ffooddd
+			// split word into letters
+
+			// 
+			let score = 0;
+			scoreLetters.forEach((letter) => score += scoreLetter(letter))
+
+			setScore(score);
+		}
+
+		function scoreLetter(letter) {
+			const scoreValues = [
+				[1, 'A', 'E', 'I', 'O', 'U', 'L', 'N', 'R', 'S', 'T'],
+				[2, 'D', 'G'],
+				[3, 'B', 'C', 'M', 'P'],
+				[4, 'F', 'H', 'V', 'W', 'Y'],
+				[5, 'K'],
+				[8, 'J', 'X'],
+				[10, 'Q', 'Z']
+			];
+			const score = scoreValues.filter((candidate) => candidate.includes(letter))[0][0];
+			return score;
+		}
+
+
+
+		function setScore(newScore) {
+			score = newScore
+			scoreOutput.innerText = score
+		}
+
+	</script>
+</body>
+
+</html>
